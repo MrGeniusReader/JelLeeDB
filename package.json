@@ -3,10 +3,14 @@
     "appwrite": "^21.5.0",
     "axios": "^1.13.2",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "fs": "^0.0.1-security",
+    "node-appwrite": "^21.1.0",
     "node-fetch": "^3.3.2",
-    "path": "^0.12.7"
+    "nodemon": "^3.1.11",
+    "path": "^0.12.7",
+    "url": "^0.11.4"
   },
   "name": "mrgeniusreader",
   "version": "1.0.0",
@@ -28,6 +32,5 @@
   "bugs": {
     "url": "https://github.com/MrGeniusReader/shizu/issues"
   },
-  "homepage": "https://github.com/MrGeniusReader/shizu#readme",
-  "devDependencies": {}
+  "homepage": "https://github.com/MrGeniusReader/shizu#readme"
 }
