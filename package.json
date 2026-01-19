@@ -1,0 +1,33 @@
+{
+  "dependencies": {
+    "appwrite": "^21.5.0",
+    "axios": "^1.13.2",
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "fs": "^0.0.1-security",
+    "node-fetch": "^3.3.2",
+    "path": "^0.12.7"
+  },
+  "name": "mrgeniusreader",
+  "version": "1.0.0",
+  "description": "KumaDB",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MrGeniusReader/shizu.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MrGeniusReader/shizu/issues"
+  },
+  "homepage": "https://github.com/MrGeniusReader/shizu#readme",
+  "devDependencies": {}
+}
