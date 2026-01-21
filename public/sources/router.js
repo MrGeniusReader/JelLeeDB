@@ -6,7 +6,7 @@ const router = Router();
 
 // Changed to .get to match standard fetching practices
 router.get("/novel/latest", fetchData);
-router.get("/novel/:id", fetchBookDetails);
 router.get("/novel/releases", fetchReleases);
+router.get("/novel/:id", fetchBookDetails);
 
 export default router;
