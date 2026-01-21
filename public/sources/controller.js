@@ -125,6 +125,7 @@ export const fetchBookDetails = async (req, res) => {
 
     results.push({
       id,
+      series_id: book.series.id,
       updated_at: updated_at,
       download_id: cleanDownloadId,
       book_details: {
@@ -153,3 +154,83 @@ export const fetchBookDetails = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+export const fetchReleases = async (req, res) => {
+  try {
+    // 1. Get Query Parameters (using the keys your URL actually uses)
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
+    const rl = req.query.lang || 'en';   // Mapping 'lang' from your URL to 'rl' for API
+    const rf = req.query.type || 'print'; // Mapping 'type' from your URL to 'rf' for API
+    const sort = req.query.sort || 'Relevance desc';
+
+    // 2. Dynamic Date Logic
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    
+    const lastDayObj = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const lastDay = `${lastDayObj.getFullYear()}-${String(lastDayObj.getMonth() + 1).padStart(2, '0')}-${String(lastDayObj.getDate()).padStart(2, '0')}`;
+
+    const minDate = req.query.minDate || today;
+    const maxDate = req.query.maxDate || lastDay;
+
+    // 3. Axios Request with 'params' object (Handles spaces in 'sort' automatically) https://ranobedb.org/api/v0/releases?page=1&limit=3&rl=en&rf=print&sort=Relevance+desc&minDate=2026-01-21&maxDate=2026-01-31
+    console.log(`https://ranobedb.org/api/v0/releases?page=${page}&limit=${limit}&rl=${lang}&rf=${type}&sort=${sort}c&minDate=${minDate}&maxDate=${maxDate}`)
+    const response = await axios.get("https://ranobedb.org/api/v0/releases", {
+      params: {
+        page,
+        limit,
+        rl,
+        rf,
+        sort,
+        minDate,
+        maxDate
+      }
+    });
+
+    // 4. Extract data from Axios wrapper
+    const apiData = response.data;
+
+    if (!apiData || !apiData.releases) {
+      return res.status(404).json({ success: false, error: "No data returned from API" });
+    }
+
+    // 5. Map the results based on the exact JSON you provided
+    const releases = apiData.releases.map(item => ({
+      id: item.id,
+      title: item.title,
+      release_date: formatDate(item.release_date), // Uses your formatDate helper
+      isbn13: item.isbn13,
+      website: item.website,
+      image_url: item.image?.filename 
+        ? `https://images.ranobedb.org/${item.image.filename}` 
+        : null,
+      external_links: {
+        amazon: item.amazon,
+        bookwalker: item.bookwalker,
+        rakuten: item.rakuten
+      }
+    }));
+
+    // 6. Send clean Response
+    res.json({
+      success: true,
+      meta: {
+        total_items: parseInt(apiData.count || 0), // "11" -> 11
+        current_page: apiData.currentPage,
+        total_pages: apiData.totalPages,
+        date_range: { minDate, maxDate }
+      },
+      data: releases
+    });
+
+  } catch (error) {
+    // This will now show you the real error in your terminal
+    console.error("FetchReleases Error:", error.message);
+    res.status(500).json({
+      success: false,
+      error: "Internal Server Error",
+      message: error.message
+    });
+  }
+};
+
