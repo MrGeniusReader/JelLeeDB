@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 const BASE_URL = "https://ranobedb.org/api/v0";
 
 // Helper function to create a delay
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+// const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 // Fetch latest uploaded ebook
 export const fetchData = async (req, res) => {
   try {
@@ -48,7 +48,6 @@ export const fetchData = async (req, res) => {
             description: book.description || "No description available.",
           },
         });
-        await sleep(1000);
       } catch (apiError) {
         console.error(`ID ${item.id} fetch failed: ${apiError.message}`);
         results.push({ ...item, book_details: null });
@@ -70,6 +69,92 @@ export const fetchData = async (req, res) => {
   }
 };
 // Fetch book details
+// export const fetchBookDetails = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     const dataPath = path.join(__dirname, "../data/data.json");
+//     const fileContent = await fs.readFile(dataPath, "utf8");
+//     const data = JSON.parse(fileContent);
+
+//     const localItem = data.data.find((item) => String(item.id) === String(id));
+
+//     // Initialize as null
+//     let updated_at = null;
+//     let cleanDownloadId = null;
+
+//     // If found locally, populate the variables
+//     if (localItem) {
+//       updated_at = localItem.updated_at;
+//       cleanDownloadId = localItem.download_url.replace(
+//         /https:\/\/drive\.google\.com\/uc\?export=download&id=|https:\/\/drive\.google\.com\/file\/d\/|\/view\?usp=drive_link/g,
+//         "",
+//       );
+//     }
+
+//     const apiUrl = `${BASE_URL}/book/${id}?rl=en&rf=print`;
+//     const apiRes = await axios.get(apiUrl);
+
+//     // Check if the API actually returned a book
+//     if (!apiRes.data || !apiRes.data.book) {
+//       return res
+//         .status(404)
+//         .json({ success: false, error: "Book not found on API" });
+//     }
+
+//     const book = apiRes.data.book;
+
+//     const rawTags = book.series?.tags || [];
+//     const genres = rawTags
+//       .filter((t) => t.ttype === "genre")
+//       .map((t) => t.name);
+//     const tags = rawTags.filter((t) => t.ttype === "tag").map((t) => t.name);
+
+//     const results = [];
+//     const series = [];
+
+//     for (const seriesItem of book.series.books) {
+//       series.push({
+//         id: seriesItem.id,
+//         title: seriesItem.title,
+//         image_url: seriesItem.image?.filename
+//           ? `https://images.ranobedb.org/${seriesItem.image.filename}`
+//           : null,
+//       });
+//     }
+
+//     results.push({
+//       id,
+//       series_id: book.series.id,
+//       updated_at: updated_at,
+//       download_id: cleanDownloadId,
+//       book_details: {
+//         titles: {
+//           title_orig: book.title_orig || "Unknown Title",
+//           title_eng: book.title || "Unknown Title",
+//         },
+//         image_url: book.image?.filename
+//           ? `https://images.ranobedb.org/${book.image.filename}`
+//           : null,
+//         score: book.rating?.score ?? null,
+//         description: book.description || "No description available.",
+//         editions: book.editions || [],
+//         publishers: book.publishers || [],
+//         tags: tags,
+//         genres: genres,
+//         series: series,
+//       },
+//     });
+
+//     res.json({
+//       success: true,
+//       data: results,
+//     });
+//   } catch (error) {
+//     res.status(500).json({ success: false, error: error.message });
+//   }
+// };
+
 export const fetchBookDetails = async (req, res) => {
   try {
     const { id } = req.params;
@@ -80,11 +165,9 @@ export const fetchBookDetails = async (req, res) => {
 
     const localItem = data.data.find((item) => String(item.id) === String(id));
 
-    // Initialize as null
     let updated_at = null;
     let cleanDownloadId = null;
 
-    // If found locally, populate the variables
     if (localItem) {
       updated_at = localItem.updated_at;
       cleanDownloadId = localItem.download_url.replace(
@@ -96,7 +179,6 @@ export const fetchBookDetails = async (req, res) => {
     const apiUrl = `${BASE_URL}/book/${id}?rl=en&rf=print`;
     const apiRes = await axios.get(apiUrl);
 
-    // Check if the API actually returned a book
     if (!apiRes.data || !apiRes.data.book) {
       return res
         .status(404)
@@ -104,27 +186,22 @@ export const fetchBookDetails = async (req, res) => {
     }
 
     const book = apiRes.data.book;
-
     const rawTags = book.series?.tags || [];
     const genres = rawTags
       .filter((t) => t.ttype === "genre")
       .map((t) => t.name);
     const tags = rawTags.filter((t) => t.ttype === "tag").map((t) => t.name);
 
-    const results = [];
-    const series = [];
+    const series = book.series.books.map((seriesItem) => ({
+      id: seriesItem.id,
+      title: seriesItem.title,
+      image_url: seriesItem.image?.filename
+        ? `https://images.ranobedb.org/${seriesItem.image.filename}`
+        : null,
+    }));
 
-    for (const seriesItem of book.series.books) {
-      series.push({
-        id: seriesItem.id,
-        title: seriesItem.title,
-        image_url: seriesItem.image?.filename
-          ? `https://images.ranobedb.org/${seriesItem.image.filename}`
-          : null,
-      });
-    }
-
-    results.push({
+    // Construct the single object directly
+    const bookData = {
       id,
       series_id: book.series.id,
       updated_at: updated_at,
@@ -137,7 +214,7 @@ export const fetchBookDetails = async (req, res) => {
         image_url: book.image?.filename
           ? `https://images.ranobedb.org/${book.image.filename}`
           : null,
-        rating: book.rating?.score ?? 0,
+        score: book.rating?.score ?? null,
         description: book.description || "No description available.",
         editions: book.editions || [],
         publishers: book.publishers || [],
@@ -145,16 +222,18 @@ export const fetchBookDetails = async (req, res) => {
         genres: genres,
         series: series,
       },
-    });
+    };
 
+    // Return as an object, not inside results array
     res.json({
       success: true,
-      data: results,
+      data: bookData,
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
 // Fetch upcoming releases
 export const fetchReleases = async (req, res) => {
   try {
@@ -357,14 +436,16 @@ export const fetchSingleSeriesDetails = async (req, res) => {
     const image_url = books ? books[0].image_url : null;
 
     const relations = [];
+
     for (const relationItem of apiData.child_series) {
+      const seriesBooks = await extractSeriesBooks(relationItem.id);
+      const firstBookImage = seriesBooks[0]?.image_url || null;
+
       relations.push({
         id: relationItem.id,
         title: relationItem.title,
         type: relationItem.relation_type,
-        image_url: await extractSeriesBooks(relationItem.id).then(
-          (book) => book[0].image_url || null,
-        ),
+        image_url: firstBookImage,
       });
     }
 
@@ -393,7 +474,7 @@ export const fetchSingleSeriesDetails = async (req, res) => {
         eng: apiData.book_description.description || null,
         jp: apiData.book_description.description_ja || null,
       },
-      score: apiData.rating.score || 0,
+      score: apiData.rating?.score ?? null,
       publishers: apiData.publishers || [],
       staff: staff,
       tags: tags,
@@ -405,6 +486,61 @@ export const fetchSingleSeriesDetails = async (req, res) => {
     res.json({
       success: true,
       data: results,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: "Internal Server Error",
+      message: error.message,
+    });
+  }
+};
+
+export const fetchBookSeries = async (req, res) => {
+  try {
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
+    const rl = req.query.lang || "en";
+    const rf = req.query.type || "print";
+    const sort = req.query.sort || "Relevance desc";
+
+    const response = await axios.get(`${BASE_URL}/series`, {
+      params: {
+        page,
+        limit,
+        rl,
+        rf,
+        sort,
+      },
+    });
+
+    // Extract the data safely
+    const apiData = response.data.series;
+
+    if (!apiData || !Array.isArray(apiData)) {
+      return res
+        .status(404)
+        .json({ success: false, error: "No data returned from API" });
+    }
+
+    const releases = apiData.map((item) => ({
+      id: item.id,
+      title: item.title,
+      image_url: item.book.image?.filename
+        ? `https://images.ranobedb.org/${item.book.image.filename}`
+        : null,
+      volumes: item.volumes.count || 0,
+    }));
+
+    res.json({
+      success: true,
+      meta: {
+        total_items: parseInt(response.data.count || 0),
+        current_page: response.data.currentPage,
+        total_pages: response.data.totalPages,
+        per_page: limit,
+      },
+      data: releases,
     });
   } catch (error) {
     res.status(500).json({

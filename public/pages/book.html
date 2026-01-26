@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>JelLeeDB - Light Novel Library</title>
+        <link rel="stylesheet" href="/styles/style.css" />
+        <script
+            src="https://kit.fontawesome.com/48699b744e.js"
+            crossorigin="anonymous"
+        ></script>
+    </head>
+
+    <body>
+        <main>
+            <!-- Side Navigation Panel -->
+            <div class="side-navigation-wrapper hidden">
+                <div class="side-header-wrapper">
+                    <div class="header-brand">
+                        <a href="/">
+                            <img
+                                src="/images/jelleedb-icon.png"
+                                alt="JelLeeDB Logo"
+                            />
+                            <span class="brand-name">JelLeeDB</span>
+                        </a>
+                    </div>
+                    <div class="close-side-bar-btn">
+                        <button class="close-btn">
+                            <img src="/images/icons8-close-60.png" alt="" />
+                        </button>
+                    </div>
+                </div>
+                <div class="side-body">
+                    <ul>
+                        <li class="selected">
+                            <a href="#" id="side-links">Home</a>
+                        </li>
+                        <li><a href="#" id="side-links">Browse Series</a></li>
+                        <li><a href="#" id="side-links">Latest Updates</a></li>
+                        <li><a href="#" id="side-links">Most Popular</a></li>
+                        <li>
+                            <a href="#" id="side-links">Upcoming Releases</a>
+                        </li>
+                        <li><a href="#" id="side-links">About Us</a></li>
+                        <li><a href="#" id="side-links">Contact Us</a></li>
+                        <li><a href="" id="side-links">Privacy Policy</a></li>
+                        <li><a href="" id="side-links">Terms of Service</a></li>
+                        <li><a href="" id="side-links">DMCA</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Main Content -->
+            <div class="main-content-wrapper">
+                <header>
+                    <div class="left-side-header">
+                        <div class="side-show-btn">
+                            <i class="fa-solid fa-bars"></i>
+                        </div>
+                        <div class="header-brand">
+                            <a href="/">
+                                <img
+                                    src="/images/jelleedb-icon.png"
+                                    alt="JelLeeDB Logo"
+                                />
+                                <span class="brand-name">JelLeeDB</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="right-side-header">
+                        <div class="search-bar">
+                            <form action="#">
+                                <label for="search">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </label>
+                                <input
+                                    type="search"
+                                    name="search"
+                                    id="search"
+                                    placeholder="Search..."
+                                    autocomplete="off"
+                                />
+                            </form>
+                        </div>
+                    </div>
+                </header>
+                <div class="page-body-wrapper">
+                    <div class="hero-panel">
+                        <div class="hero-panel-1">
+                            <div class="hero-panel-cover"></div>
+                            <div class="hero-panel-buttons">
+                                <button class="button-panel" id="add-btn">
+                                    <span
+                                        ><i class="fa-regular fa-bookmark"></i
+                                    ></span>
+                                    <span>Add to Bookmark</span>
+                                </button>
+                                <button class="button-panel" id="read-btn">
+                                    <span
+                                        ><i
+                                            class="fa-brands fa-readme"
+                                        ></i></span
+                                    ><span>Read Now</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="hero-panel-2">
+                            <div class="titles-panel"></div>
+                            <div class="start-score-panel"></div>
+                            <div class="description-panel"></div>
+                        </div>
+                    </div>
+
+                    <div class="title-list-panel">
+                        <h2>Titles</h2>
+                        <ul id="title-list"></ul>
+                    </div>
+
+                    <div class="genres-tag-wrapper">
+                        <div class="genres-list-panel">
+                            <h2>Genres</h2>
+                            <ul id="genres-list"></ul>
+                        </div>
+                        <div class="tags-list-panel">
+                            <h2>Tags</h2>
+                            <ul id="tags-list"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer -->
+            <footer>
+                <div class="footer-container">
+                    <!-- Brand Section -->
+                    <div class="footer-brand">
+                        <div class="footer-logo">
+                            <img
+                                src="/images/jelleedb-icon.png"
+                                alt="JelLeeDB Logo"
+                            />
+                            <span class="brand-name">JelLeeDB</span>
+                        </div>
+                        <p class="brand-tagline">
+                            JelLeeDB is an online platform dedicated to
+                            providing readers with an extensive collection of
+                            light and web novels in user-friendly ebook formats,
+                            ensuring easy access to a diverse range of stories
+                            from various genres and authors. Whether you're into
+                            fantasy, romance, sci-fi, or slice-of-life tales,
+                            the site offers a vast library to cater to all
+                            tastes, with regular updates to keep the selection
+                            fresh and engaging. It relies on ranobedb.org as its
+                            core database for reliable information on titles,
+                            summaries, and metadata, helping users discover and
+                            enjoy their favorite reads seamlessly.
+                        </p>
+                    </div>
+                    <!-- Links Sections -->
+                    <div class="footer-links">
+                        <div class="footer-section">
+                            <h4>Quick Links</h4>
+                            <ul>
+                                <li><a href="/browse">Browse Series</a></li>
+                                <li><a href="/latest">Latest Updates</a></li>
+                                <li><a href="/popular">Most Popular</a></li>
+                                <li>
+                                    <a href="/upcoming">Upcoming Releases</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="footer-section">
+                            <h4>Support</h4>
+                            <ul>
+                                <li><a href="/about">About Us</a></li>
+                                <li><a href="/contact">Contact</a></li>
+                                <li><a href="/faq">FAQ</a></li>
+                                <li><a href="/help">Help Center</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-section">
+                            <h4>Legal</h4>
+                            <ul>
+                                <li><a href="/privacy">Privacy Policy</a></li>
+                                <li><a href="/terms">Terms of Service</a></li>
+                                <li><a href="/dmca">DMCA</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Newsletter/Social (Optional) -->
+                    <div class="footer-newsletter">
+                        <h4>Stay Updated</h4>
+                        <p>Subscribe for the latest releases and updates.</p>
+                        <form class="newsletter-form">
+                            <input
+                                type="email"
+                                placeholder="Enter your email"
+                                required
+                            />
+                            <button type="submit">Subscribe</button>
+                        </form>
+                        <div class="social-links">
+                            <a href="#" aria-label="Facebook"
+                                ><i class="fa-brands fa-facebook-f"></i
+                            ></a>
+                            <a href="#" aria-label="Twitter"
+                                ><i class="fa-brands fa-twitter"></i
+                            ></a>
+                            <a href="#" aria-label="Discord"
+                                ><i class="fa-brands fa-discord"></i
+                            ></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Disclaimer -->
+                <div class="footer-disclaimer">
+                    <p>
+                        <strong>Disclaimer:</strong> JelLeeDB is a fan-made
+                        platform that aggregates information and provides access
+                        to light and web novels in ebook format for personal,
+                        non-commercial use. All content is sourced from public
+                        databases like ranobedb.org and is not hosted on our
+                        servers. We do not own, produce, or distribute any
+                        copyrighted material. Users are responsible for ensuring
+                        their downloads comply with local laws and copyright
+                        regulations. JelLeeDB respects intellectual property
+                        rights and encourages supporting original authors and
+                        publishers. If you believe any content infringes on your
+                        rights, please contact us via our DMCA page.
+                    </p>
+                </div>
+                <!-- Copyright -->
+                <div class="footer-copyright">
+                    <p>
+                        &copy; 2023 JelLeeDB. All rights reserved. Powered by
+                        ranobedb.org data.
+                    </p>
+                </div>
+            </footer>
+        </main>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="/script/script.js"></script>
+        <script src="/script/fetch-book.js"></script>
+    </body>
+</html>
