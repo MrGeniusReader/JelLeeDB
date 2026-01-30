@@ -38,6 +38,34 @@ $(document).ready(function () {
         <li><div class="skeleton" style="width: 70px; height: 20px; border-radius: 5px;"></div></li>
         <li><div class="skeleton" style="width: 70px; height: 20px; border-radius: 5px;"></div></li>
     `);
+
+    $(".staff-panel-wrapper").html(`
+        <div class='edition-section'>
+            <ul>
+                <li><div class="skeleton" style="width: 70px; height: 20px; border-radius: 5px;"></div></li>
+                <li><div class="skeleton" style="width: 70px; height: 20px; border-radius: 5px;"></div></li>
+                <li><div class="skeleton" style="width: 70px; height: 20px; border-radius: 5px;"></div></li>
+            </ul>
+        </div>
+    `);
+
+    $(".publishers-panel-wrapper").html(`
+        <div class='lang-section'>
+            <ul>
+                <li><div class="skeleton" style="width: 70px; height: 20px; border-radius: 5px;"></div></li>
+                <li><div class="skeleton" style="width: 70px; height: 20px; border-radius: 5px;"></div></li>
+                <li><div class="skeleton" style="width: 70px; height: 20px; border-radius: 5px;"></div></li>
+            </ul>
+        </div>
+    `);
+
+    let skeletonItems = "";
+    const itemHTML =
+      '<li class="series-item skeleton" style="flex: 0 0 180px; height: 260px; border-radius: 8px;"></li>';
+    for (let i = 0; i < 9; i++) {
+      skeletonItems += itemHTML;
+    }
+    $("#series-list").html(skeletonItems);
   }
 
   showSkeletons();
@@ -60,6 +88,9 @@ $(document).ready(function () {
       $("#title-list").empty();
       $("#genres-list").empty();
       $("#tags-list").empty();
+      $(".staff-panel-wrapper").empty();
+      $(".publishers-panel-wrapper").empty();
+      $("#series-list").empty();
 
       $(".hero-panel-cover").append(`
         <img src="${data.book_details.image_url}" alt="${data.book_details.titles.title_eng}" />
@@ -129,6 +160,102 @@ $(document).ready(function () {
                 <li><span>${formattedTag}</span></li>
             `);
       }
+
+      const editions = data.book_details.editions;
+
+      if (editions && editions.length > 0) {
+        let htmlContent = "";
+
+        editions.forEach((edition) => {
+          // Start the section for each edition
+          htmlContent += `<div class='edition-section'><h3>${edition.title}</h3><ul>`;
+
+          // Loop through each staff member in this edition
+          edition.staff.forEach((person) => {
+            // Fallback to .name if .romaji is null
+            const displayName = person.romaji || person.name;
+
+            htmlContent += `
+              <li>
+                <h5>${displayName}</h5>
+                <p>${person.role_type} ${person.note ? `(${person.note})` : ""}</p>
+              </li>`;
+          });
+
+          htmlContent += `</ul></div>`;
+        });
+
+        $(".staff-panel-wrapper").append(htmlContent);
+      }
+
+      const publishers = data.book_details.publishers;
+
+      if (publishers && publishers.length > 0) {
+        // 1. Group publishers by language
+        const grouped = publishers.reduce((acc, pub) => {
+          const lang = pub.lang || "Other";
+          if (!acc[lang]) acc[lang] = [];
+          acc[lang].push(pub);
+          return acc;
+        }, {});
+
+        let htmlContent = "";
+
+        // 2. Loop through the groups (en, ja, etc.)
+        for (const lang in grouped) {
+          // Map language codes to readable titles
+          const langTitle =
+            lang === "ja"
+              ? "Japanese"
+              : lang === "en"
+                ? "English"
+                : lang.toUpperCase();
+
+          htmlContent += `
+            <div class='lang-section'>
+              <h3>${langTitle} Publishers</h3>
+              <ul>`;
+
+          // 3. Loop through the publishers in that specific language
+          grouped[lang].forEach((pub) => {
+            const displayName = pub.romaji || pub.name;
+            const typeLabel =
+              pub.publisher_type === "imprint" ? " (Imprint)" : "";
+
+            htmlContent += `
+              <li>
+                <h5>${displayName}</h5>
+                <p>${pub.publisher_type.charAt(0).toUpperCase() + pub.publisher_type.slice(1)}</p>
+              </li>`;
+          });
+
+          htmlContent += `</ul></div>`;
+        }
+
+        $(".publishers-panel-wrapper").append(htmlContent);
+      }
+
+      data.book_details.series.forEach((book) => {
+        $("#series-list").append(`
+                  <li class="series-item" data-id="/book/${book.id}">
+                      <img src="${book.image_url}" alt="${book.title}" />
+                      <div class="series-item-info">
+                          <h2>${book.title}</h2>
+                      </div>
+                  </li>
+              `);
+      });
+
+      $("#series-list").scrollLeft(0);
+
+      // const downloadId = `https://drive.google.com/uc?export=download&id=${data.download_id}`;
+
+      $("#read-btn").click(function () {
+        const dlId = data.download_id;
+        if (dlId) {
+          window.location.href = `/reader/${dlId}`;
+        }
+      });
     },
     error: function (xhr, status, error) {
       console.error(error);

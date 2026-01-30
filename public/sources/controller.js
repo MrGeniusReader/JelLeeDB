@@ -68,93 +68,8 @@ export const fetchData = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
 // Fetch book details
-// export const fetchBookDetails = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-
-//     const dataPath = path.join(__dirname, "../data/data.json");
-//     const fileContent = await fs.readFile(dataPath, "utf8");
-//     const data = JSON.parse(fileContent);
-
-//     const localItem = data.data.find((item) => String(item.id) === String(id));
-
-//     // Initialize as null
-//     let updated_at = null;
-//     let cleanDownloadId = null;
-
-//     // If found locally, populate the variables
-//     if (localItem) {
-//       updated_at = localItem.updated_at;
-//       cleanDownloadId = localItem.download_url.replace(
-//         /https:\/\/drive\.google\.com\/uc\?export=download&id=|https:\/\/drive\.google\.com\/file\/d\/|\/view\?usp=drive_link/g,
-//         "",
-//       );
-//     }
-
-//     const apiUrl = `${BASE_URL}/book/${id}?rl=en&rf=print`;
-//     const apiRes = await axios.get(apiUrl);
-
-//     // Check if the API actually returned a book
-//     if (!apiRes.data || !apiRes.data.book) {
-//       return res
-//         .status(404)
-//         .json({ success: false, error: "Book not found on API" });
-//     }
-
-//     const book = apiRes.data.book;
-
-//     const rawTags = book.series?.tags || [];
-//     const genres = rawTags
-//       .filter((t) => t.ttype === "genre")
-//       .map((t) => t.name);
-//     const tags = rawTags.filter((t) => t.ttype === "tag").map((t) => t.name);
-
-//     const results = [];
-//     const series = [];
-
-//     for (const seriesItem of book.series.books) {
-//       series.push({
-//         id: seriesItem.id,
-//         title: seriesItem.title,
-//         image_url: seriesItem.image?.filename
-//           ? `https://images.ranobedb.org/${seriesItem.image.filename}`
-//           : null,
-//       });
-//     }
-
-//     results.push({
-//       id,
-//       series_id: book.series.id,
-//       updated_at: updated_at,
-//       download_id: cleanDownloadId,
-//       book_details: {
-//         titles: {
-//           title_orig: book.title_orig || "Unknown Title",
-//           title_eng: book.title || "Unknown Title",
-//         },
-//         image_url: book.image?.filename
-//           ? `https://images.ranobedb.org/${book.image.filename}`
-//           : null,
-//         score: book.rating?.score ?? null,
-//         description: book.description || "No description available.",
-//         editions: book.editions || [],
-//         publishers: book.publishers || [],
-//         tags: tags,
-//         genres: genres,
-//         series: series,
-//       },
-//     });
-
-//     res.json({
-//       success: true,
-//       data: results,
-//     });
-//   } catch (error) {
-//     res.status(500).json({ success: false, error: error.message });
-//   }
-// };
-
 export const fetchBookDetails = async (req, res) => {
   try {
     const { id } = req.params;
@@ -248,7 +163,7 @@ export const fetchReleases = async (req, res) => {
     const month = String(now.getMonth() + 1).padStart(2, "0");
     const day = String(now.getDate()).padStart(2, "0");
     const today = `${year}-${month}-${day}`;
-    const lastDayObj = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const lastDayObj = new Date(now.getFullYear(), 12, 0); // Changed to December (month 12)
     const lastDay = `${lastDayObj.getFullYear()}-${String(lastDayObj.getMonth() + 1).padStart(2, "0")}-${String(lastDayObj.getDate()).padStart(2, "0")}`;
 
     const minDate = req.query.minDate || today;
@@ -314,6 +229,7 @@ export const fetchReleases = async (req, res) => {
     });
   }
 };
+
 // Fetch release book details
 export const fetchReleaseBookDetails = async (req, res) => {
   try {
@@ -349,6 +265,7 @@ export const fetchReleaseBookDetails = async (req, res) => {
 
     const bookDetails = {
       id: apiData.id,
+      book_id: apiData.books[0].id,
       title: apiData.title || null,
       release_date: apiData.release_date || null,
       website: apiData.website || null,
@@ -423,6 +340,7 @@ export const fetchSingleSeriesDetails = async (req, res) => {
         role: staffItems.role_type,
         name: staffItems.name || null,
         romaji: staffItems.romaji || null,
+        lang: staffItems.lang || null,
       });
     }
 
