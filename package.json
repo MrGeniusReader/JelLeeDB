@@ -13,7 +13,7 @@
   },
   "name": "mrgeniusreader",
   "version": "1.0.0",
-  "description": "KumaDB",
+  "description": "JelLeeDB",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

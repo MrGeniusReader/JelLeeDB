@@ -63,6 +63,7 @@ app.get("/proxy", async (req, res) => {
   }
 });
 
-app.listen(PORT, HOST, () => {
-  console.log(`Server is running at http://${HOST}:${PORT}`);
-});
+// app.listen(PORT, HOST, () => {
+//   console.log(`Server is running at http://${HOST}:${PORT}`);
+// });
+export default app;
