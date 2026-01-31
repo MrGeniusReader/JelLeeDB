@@ -4,803 +4,363 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Document</title>
-        <link rel="stylesheet" href="/styles/style.css" />
         <script
             src="https://kit.fontawesome.com/48699b744e.js"
             crossorigin="anonymous"
         ></script>
         <style>
-            .page-body-wrapper {
-                width: 100%;
-                max-width: 1200px;
-                margin: 0 auto;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 10px;
-            }
-            .chapter-body h2 {
-                padding: 20px 40px;
-            }
-            #toc-list {
-                list-style-type: none;
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-                padding: 0;
-                margin: 0;
-            }
-            #toc-list li a {
-                color: #e1dee6;
-                font-size: 1rem;
-            }
-
-            /* Loading circle (circular progress bar) */
-            #loading-circle {
-                display: block;
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                z-index: 1000;
-            }
-            #loading-circle svg {
-                width: 60px;
-                height: 60px;
-            }
-            #loading-circle circle {
-                fill: none;
-                stroke: #ddd;
-                stroke-width: 4;
-            }
-            #loading-circle .progress {
-                stroke: #e1dee6;
-                stroke-linecap: round;
-                transition: stroke-dashoffset 0.3s ease;
-            }
-            #loading-text {
-                display: block;
-                position: fixed;
-                top: 60%;
-                left: 50%;
-                transform: translateX(-50%);
-                color: #e1dee6;
-                font-family:
-                    system-ui,
-                    -apple-system,
-                    sans-serif;
-                z-index: 1001;
-                font-size: 14px;
-            }
-
-            #viewer {
-                width: 80%;
-                height: 80vh;
-                position: relative;
-                margin: 0 auto;
-                background: linear-gradient(
+            :root {
+                --primary-color: #ac03d6;
+                --primary-hover: #9a02c2;
+                --dark-primary-color: #783a87;
+                --secondary-color: #4b00c5;
+                --text-color: #e1dee6;
+                --text-muted: #b3b3b3;
+                --background-color: #15171a;
+                --card-background-color: #212529;
+                --border-color: #3a2b3e;
+                --shadow-color: rgba(0, 0, 0, 0.5);
+                --shadow-light: rgba(172, 3, 214, 0.2);
+                --gradient-bg: linear-gradient(
                     135deg,
                     #15171a 0%,
                     #1a1d21 50%,
                     #15171a 100%
                 );
+                --transition-fast: 0.2s ease-in-out;
+                --transition-smooth: 0.3s ease-in-out;
+                --border-radius: 12px;
+                --border-radius-large: 20px;
+                --font-size-base: 16px;
+                --font-size-large: 1.2rem;
+                --font-size-xl: 1.5rem;
+                --font-size-2xl: 2rem;
+                --font-size-3xl: 3rem;
             }
 
-            /* Ensure the iframe inside actually fills the container */
-            #viewer iframe {
-                width: 100% !important;
-                height: 100% !important;
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
             }
 
-            .page-body-wrapper button {
-                width: 70px;
-                height: 70px;
-                background-color: transparent;
-                border: none;
+            html {
+                scroll-behavior: smooth;
+            }
+
+            body {
+                background: var(--gradient-bg);
+                background-attachment: fixed;
+                font-family: "Inter", sans-serif;
+                color: var(--text-color);
+                line-height: 1.6;
+                font-size: var(--font-size-base);
+                overflow-x: hidden;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            main {
+                max-width: 100%;
+                height: 100vh;
+                display: flex;
+                overflow: hidden; /* Prevent body scroll issues */
+            }
+
+            .side-navigation {
+                width: 300px;
+                min-width: 300px;
+                min-height: 100vh;
+                background-color: var(--background-color);
+                display: flex;
+                transition: transform var(--transition-smooth);
+            }
+
+            .side-buttons {
+                width: auto;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                display: flex;
+                padding-top: 20px;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                overflow-y: auto;
+            }
+
+            .side-button {
+                padding: 10px 15px;
+                border-left: 3px solid transparent; /* Thicker for visibility */
+                transition:
+                    border-left-color var(--transition-fast),
+                    color var(--transition-fast);
+                will-change: transform; /* Optimize hover */
+            }
+
+            .side-button span i {
+                font-size: 1.2rem;
+                color: var(--text-muted);
+                transition: color var(--transition-fast);
+            }
+
+            .side-button.selected {
+                border-left-color: var(--primary-color);
+            }
+
+            .side-button.selected span i {
+                color: var(--text-color);
+            }
+
+            .side-button:hover,
+            .side-button:focus {
                 cursor: pointer;
+                border-left-color: var(--primary-color);
                 outline: none;
+            }
+
+            .side-button:hover span i,
+            .side-button:focus span i {
+                color: var(--text-color);
+            }
+
+            .side-panel {
+                padding: 20px 10px;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                overflow-y: auto;
+                width: 100%;
+            }
+
+            .side-panel div h2 {
+                font-size: var(--font-size-large);
+                margin-bottom: 10px;
+            }
+
+            .side-panel div ul {
+                max-width: 100%;
+                flex: 1;
+                list-style-type: none;
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                overflow-y: hidden;
+                gap: 0;
+                margin: 20px 0;
+                padding: 0;
+                min-height: 0; /* Flex fix */
+                scrollbar-width: thin;
+                scrollbar-color: var(--border-color) transparent;
+            }
+
+            .side-panel::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .side-panel::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            .side-panel::-webkit-scrollbar-thumb {
+                background: var(--border-color);
+                border-radius: 3px;
+            }
+
+            .side-panel div ul li {
+                width: 100%;
+                height: auto;
+                padding: 8px 20px;
+                background-color: transparent;
+                color: var(--text-muted);
+                font-size: 0.8rem;
+                display: block;
+                transition: all var(--transition-fast);
+            }
+
+            .side-panel div ul li:hover,
+            .side-panel div ul li:focus {
+                background-color: var(--border-color);
+            }
+
+            .side-panel div ul li.selected {
+                background-color: var(--border-color);
+            }
+
+            .main-panel {
+                width: 100%;
+                background-color: var(--card-background-color);
+                overflow: hidden;
+                position: relative;
+            }
+
+            .chapter-loader {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(
+                    21,
+                    23,
+                    26,
+                    0.8
+                ); /* Semi-transparent background-color */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10;
+                transition: opacity 0.2s;
+            }
+
+            .chapter-loader.hidden {
+                display: none;
+                opacity: 0;
+            }
+
+            .mini-spinner {
+                width: 30px;
+                height: 30px;
+                border: 3px solid var(--border-color);
+                border-top: 3px solid var(--primary-color);
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+            }
+
+            #viewer {
+                max-width: 100%;
+                height: 100%;
+            }
+            #viewer .epub-view {
+                background-color: var(--card-background-color);
+            }
+            #viewer ifram {
+                width: 100%;
+                height: 100vh;
+                background-color: var(--card-background-color);
+            }
+            /* Full screen overlay */
+            .loader-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: var(--background-color);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 2000; /* Above the sidebar */
+                transition: opacity var(--transition-smooth);
+            }
+
+            .loader-overlay.hidden {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .loader-content {
                 text-align: center;
             }
-            .page-body-wrapper button:hover {
-                background-color: #212529;
+
+            /* Spinner using your primary theme color */
+            .spinner {
+                width: 50px;
+                height: 50px;
+                border: 4px solid var(--border-color);
+                border-top: 4px solid var(--primary-color);
                 border-radius: 50%;
+                animation: spin 1s linear infinite;
+                margin: 0 auto 15px;
             }
-            .page-body-wrapper button:focus {
-                outline: none;
+
+            #loader-text {
+                color: var(--text-color);
+                font-size: var(--font-size-large);
+                letter-spacing: 1px;
             }
-            .page-body-wrapper button i {
-                color: #e1dee6;
-                font-size: 24px;
-                line-height: 70px;
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                .side-navigation {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 300px;
+                    transform: translateX(-100%); /* Hidden by default */
+                    z-index: 1000;
+                    box-shadow: 2px 0 10px var(--shadow-color);
+                }
+                .side-navigation.side-navigation--open {
+                    transform: translateX(0); /* Show when open */
+                }
+                .main-panel {
+                    width: 100%;
+                }
+                /* Add a toggle button in JS/HTML for mobile, e.g., a hamburger menu */
+            }
+
+            @media (max-width: 480px) {
+                .side-navigation {
+                    width: 250px; /* Narrower on very small screens */
+                }
+                .side-button {
+                    padding: 8px 12px;
+                }
+                .side-panel {
+                    padding: 15px 5px;
+                }
             }
         </style>
     </head>
 
     <body>
         <main>
-            <!-- Side Navigation Panel -->
-            <div class="side-navigation-wrapper hidden">
-                <div class="side-header-wrapper">
-                    <div class="header-brand">
-                        <a href="/">
-                            <img
-                                src="/images/jelleedb-icon.png"
-                                alt="JelLeeDB Logo"
-                            />
-                            <span class="brand-name">JelLeeDB</span>
-                        </a>
+            <div class="side-navigation">
+                <div class="side-buttons">
+                    <div class="side-button selected" data-action="list">
+                        <span><i class="fa-solid fa-list"></i></span>
                     </div>
-                    <div class="close-side-bar-btn">
-                        <button class="close-btn">
-                            <img src="/images/icons8-close-60.png" alt="" />
-                        </button>
+                    <div class="side-button" data-action="bookmark">
+                        <span><i class="fa-solid fa-bookmark"></i></span>
+                    </div>
+                    <div class="side-button" data-action="image">
+                        <span><i class="fa-solid fa-image"></i></span>
+                    </div>
+                    <div class="side-button" data-action="settings">
+                        <span><i class="fa-solid fa-gear"></i></span>
+                    </div>
+                    <div class="side-button" data-action="home">
+                        <span><i class="fa-solid fa-house"></i></span>
                     </div>
                 </div>
-                <div class="side-body chapter-body">
-                    <h2>Chapters</h2>
-                    <ul id="toc-list"></ul>
-                </div>
+                <div class="side-panel"></div>
             </div>
-            <!-- Main Content -->
-            <div class="main-content-wrapper">
-                <header>
-                    <div class="left-side-header">
-                        <div class="side-show-btn">
-                            <i class="fa-solid fa-bars"></i>
-                        </div>
-                        <div class="header-brand">
-                            <a href="/">
-                                <img
-                                    src="/images/jelleedb-icon.png"
-                                    alt="JelLeeDB Logo"
-                                />
-                                <span class="brand-name">JelLeeDB</span>
-                            </a>
-                        </div>
+            <div class="main-panel">
+                <div id="book-loader" class="loader-overlay">
+                    <div class="loader-content">
+                        <div class="spinner"></div>
+                        <p id="loader-text">Loading Book...</p>
                     </div>
-                </header>
-
-                <div id="loading-circle">
-                    <svg viewBox="0 0 36 36">
-                        <circle
-                            cx="18"
-                            cy="18"
-                            r="16"
-                            class="progress"
-                            stroke-dasharray="100, 100"
-                            stroke-dashoffset="0"
-                        ></circle>
-                    </svg>
                 </div>
-                <div id="loading-text">Loading book...</div>
-
-                <div class="page-body-wrapper">
-                    <button id="prev-page" disabled>
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </button>
-                    <div id="viewer"></div>
-                    <button id="next-page">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
+                <div id="chapter-loader" class="chapter-loader hidden">
+                    <div class="mini-spinner"></div>
                 </div>
+                <div id="viewer"></div>
             </div>
-            <!-- Footer -->
-            <footer>
-                <div class="footer-container">
-                    <!-- Brand Section -->
-                    <div class="footer-brand">
-                        <div class="footer-logo">
-                            <img
-                                src="/images/jelleedb-icon.png"
-                                alt="JelLeeDB Logo"
-                            />
-                            <span class="brand-name">JelLeeDB</span>
-                        </div>
-                        <p class="brand-tagline">
-                            JelLeeDB is an online platform dedicated to
-                            providing readers with an extensive collection of
-                            light and web novels in user-friendly ebook formats,
-                            ensuring easy access to a diverse range of stories
-                            from various genres and authors. Whether you're into
-                            fantasy, romance, sci-fi, or slice-of-life tales,
-                            the site offers a vast library to cater to all
-                            tastes, with regular updates to keep the selection
-                            fresh and engaging. It relies on ranobedb.org as its
-                            core database for reliable information on titles,
-                            summaries, and metadata, helping users discover and
-                            enjoy their favorite reads seamlessly.
-                        </p>
-                    </div>
-                    <!-- Links Sections -->
-                    <div class="footer-links">
-                        <div class="footer-section">
-                            <h4>Quick Links</h4>
-                            <ul>
-                                <li><a href="/browse">Browse Series</a></li>
-                                <li><a href="/latest">Latest Updates</a></li>
-                                <li><a href="/popular">Most Popular</a></li>
-                                <li>
-                                    <a href="/upcoming">Upcoming Releases</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="footer-section">
-                            <h4>Support</h4>
-                            <ul>
-                                <li><a href="/about">About Us</a></li>
-                                <li><a href="/contact">Contact</a></li>
-                                <li><a href="/faq">FAQ</a></li>
-                                <li><a href="/help">Help Center</a></li>
-                            </ul>
-                        </div>
-                        <div class="footer-section">
-                            <h4>Legal</h4>
-                            <ul>
-                                <li><a href="/privacy">Privacy Policy</a></li>
-                                <li><a href="/terms">Terms of Service</a></li>
-                                <li><a href="/dmca">DMCA</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- Newsletter/Social (Optional) -->
-                    <div class="footer-newsletter">
-                        <h4>Stay Updated</h4>
-                        <p>Subscribe for the latest releases and updates.</p>
-                        <form class="newsletter-form">
-                            <input
-                                type="email"
-                                placeholder="Enter your email"
-                                required
-                            />
-                            <button type="submit">Subscribe</button>
-                        </form>
-                        <div class="social-links">
-                            <a href="#" aria-label="Facebook"
-                                ><i class="fa-brands fa-facebook-f"></i
-                            ></a>
-                            <a href="#" aria-label="Twitter"
-                                ><i class="fa-brands fa-twitter"></i
-                            ></a>
-                            <a href="#" aria-label="Discord"
-                                ><i class="fa-brands fa-discord"></i
-                            ></a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Disclaimer -->
-                <div class="footer-disclaimer">
-                    <p>
-                        <strong>Disclaimer:</strong> JelLeeDB is a fan-made
-                        platform that aggregates information and provides access
-                        to light and web novels in ebook format for personal,
-                        non-commercial use. All content is sourced from public
-                        databases like ranobedb.org and is not hosted on our
-                        servers. We do not own, produce, or distribute any
-                        copyrighted material. Users are responsible for ensuring
-                        their downloads comply with local laws and copyright
-                        regulations. JelLeeDB respects intellectual property
-                        rights and encourages supporting original authors and
-                        publishers. If you believe any content infringes on your
-                        rights, please contact us via our DMCA page.
-                    </p>
-                </div>
-                <!-- Copyright -->
-                <div class="footer-copyright">
-                    <p>
-                        &copy; 2023 JelLeeDB. All rights reserved. Powered by
-                        ranobedb.org data.
-                    </p>
-                </div>
-            </footer>
         </main>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="/script/script.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
-        <!--<script>
-            const pathSegments = window.location.pathname.split("/");
-            const bookId = pathSegments[pathSegments.length - 1];
-
-            const prevBtn = document.getElementById("prev-page");
-            const nextBtn = document.getElementById("next-page");
-
-            const loadingCircle = document.querySelector(
-                "#loading-circle .progress",
-            );
-            const loadingText = document.getElementById("loading-text");
-
-            var book = ePub(
-                `https://fupftcwcgdnhzgfvxpzg.supabase.co/storage/v1/object/public/JelLee/The%20Boy%20Who%20Ruled%20the%20Monsters_%20Volume%201.epub`,
-            );
-
-            var rendition = book.renderTo("viewer", {
-                width: "100%",
-                height: "100%",
-                flow: "paginated",
-                manager: "continuous",
-                allowScriptedContent: true,
-            });
-
-            let isFlipping = false;
-
-            rendition.on("rendered", (section, view) => {
-                view.contents.on("wheel", (event) => {
-                    if (isFlipping) return;
-
-                    if (Math.abs(event.deltaY) > 10) {
-                        // Threshold to prevent accidental flips
-                        isFlipping = true;
-
-                        if (event.deltaY > 0) {
-                            rendition.next();
-                        } else {
-                            rendition.prev();
-                        }
-
-                        // Wait 500ms before allowing another page turn
-                        setTimeout(() => {
-                            isFlipping = false;
-                        }, 500);
-                    }
-                });
-            });
-
-            rendition.hooks.content.register(function (contents) {
-                contents.addStylesheetRules({
-                    body: {
-                        background:
-                            "linear-gradient(135deg, #15171a 0%, #1a1d21 50%, #15171a 100%) !important",
-                        color: "#e1dee6 !important",
-                        "font-family":
-                            "system-ui, -apple-system, sans-serif !important",
-                    },
-                    html: {
-                        background: "transparent !important", // Prevents white flashes between pages
-                    },
-                    "h1, h2, h3, h4": {
-                        color: "#e1dee6 !important",
-                    },
-                    "p, div, li": {
-                        color: "#e1dee6 !important",
-                        "line-height": "1.6 !important",
-                    },
-                });
-            });
-            var displayed = rendition.display();
-
-            prevBtn.addEventListener("click", () => {
-                rendition.prev();
-            });
-
-            nextBtn.addEventListener("click", () => {
-                rendition.next();
-            });
-
-            rendition.on("relocated", (location) => {
-                // Hide prev button if at the start (first chapter)
-                prevBtn.style.display = location.atStart ? "none" : "block";
-                // Hide next button if at the end (last chapter)
-                nextBtn.style.display = location.atEnd ? "none" : "block";
-
-                // Get the current section's href (relative path)
-                const currentHref = location.start.href; // e.g., "Text/chapter1.xhtml"
-                updateTocCheck(currentHref);
-            });
-
-            // 1. Better Progress Animation
-            let progress = 0;
-            const progressInterval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress > 95) progress = 95; // Hold at 95%
-
-                // Calculate offset: 100 is empty, 0 is full
-                const offset = 100 - progress;
-                loadingCircle.style.strokeDashoffset = offset;
-            }, 150);
-
-            // 2. The "Finish" Function
-            function hideLoader() {
-                clearInterval(progressInterval);
-                loadingCircle.style.strokeDashoffset = 0; // Force to 100% (Full circle)
-                loadingText.textContent = "Rendered!";
-
-                setTimeout(() => {
-                    document.getElementById("loading-circle").style.transition =
-                        "opacity 0.5s";
-                    loadingText.style.transition = "opacity 0.5s";
-                    document.getElementById("loading-circle").style.opacity =
-                        "0";
-                    loadingText.style.opacity = "0";
-
-                    setTimeout(() => {
-                        document.getElementById(
-                            "loading-circle",
-                        ).style.display = "none";
-                        loadingText.style.display = "none";
-                    }, 500);
-                }, 300);
-            }
-
-            // 3. Trigger finish when the FIRST page is actually displayed
-            rendition.display().then(() => {
-                hideLoader();
-                const initialHref = rendition.currentLocation().start.href;
-                updateTocCheck(initialHref);
-            });
-
-            /* book.loaded.navigation.then(function (nav) {
-                const list = document.getElementById("toc-list");
-                if (!list) return;
-                list.innerHTML = "";
-
-                function updateTocCheck(currentHref) {
-                    // Remove check from all TOC links
-                    document.querySelectorAll("#toc-list li a").forEach((a) => {
-                        const checkIcon = a.querySelector(".check-icon");
-                        if (checkIcon) checkIcon.remove();
-                    });
-
-                    // Add check to the current chapter's link
-                    const currentLink = document.querySelector(
-                        `#toc-list a[data-href="${currentHref}"]`,
-                    );
-                    if (currentLink) {
-                        const checkIcon = document.createElement("i");
-                        checkIcon.className = "fa-solid fa-check check-icon";
-                        checkIcon.style.marginLeft = "10px";
-                        checkIcon.style.color = "#e1dee6"; // Match your theme
-                        currentLink.appendChild(checkIcon);
-                    }
-                }
-
-                const processItems = (items, container) => {
-                    items.forEach((chapter) => {
-                        const li = document.createElement("li");
-                        const a = document.createElement("a");
-                        a.textContent = chapter.label;
-                        a.href = "#";
-                        a.setAttribute("data-href", chapter.href);
-
-                        li.appendChild(a);
-                        li.onclick = function (e) {
-                            e.preventDefault();
-
-                            // Get the canonical (resolved) href (for logging/debugging)
-                            const canonicalHref = book.canonical(chapter.href);
-
-                            // Strip leading '/' if present (for spine lookup)
-                            const adjustedCanonicalHref =
-                                canonicalHref.startsWith("/")
-                                    ? canonicalHref.slice(1)
-                                    : canonicalHref;
-
-                            // Extract the base adjusted canonical href (before #) for spine lookup
-                            const canonicalBaseHref =
-                                adjustedCanonicalHref.split("#")[0];
-                            const spineItem = book.spine.get(canonicalBaseHref);
-
-                            if (!spineItem) {
-                                return; // Prevent the display call
-                            }
-
-                            // Use the spine item's href for display (the relative path, e.g., "Text/chapter1.xhtml")
-                            const displayHref = spineItem.href;
-
-                            rendition
-                                .display(displayHref)
-                                .then(() => {
-                                    updateTocCheck(displayHref);
-                                })
-                                .catch((err) => {
-                                    console.error("Navigation error:", err);
-                                });
-                        };
-                        container.appendChild(li);
-
-                        // If there are sub-chapters (nested lists), handle them:
-                        if (chapter.subitems && chapter.subitems.length > 0) {
-                            const ul = document.createElement("ul");
-                            li.appendChild(ul);
-                            processItems(chapter.subitems, ul);
-                        }
-                    });
-                };
-
-                processItems(nav.toc, list);
-            }); */
-
-            book.loaded.navigation.then(function (nav) {
-                const list = document.getElementById("toc-list");
-                if (!list) return;
-                list.innerHTML = "";
-
-                // Function to update the TOC with a check icon for the current chapter
-                function updateTocCheck(currentHref) {
-                    // Remove check from all TOC links
-                    document.querySelectorAll("#toc-list li a").forEach((a) => {
-                        const checkIcon = a.querySelector(".check-icon");
-                        if (checkIcon) checkIcon.remove();
-                    });
-
-                    // Add check to the current chapter's link
-                    const currentLink = document.querySelector(
-                        `#toc-list li a[data-href="${currentHref}"]`,
-                    );
-                    if (currentLink) {
-                        const checkIcon = document.createElement("i");
-                        checkIcon.className = "fa-solid fa-check check-icon";
-                        checkIcon.style.marginLeft = "10px";
-                        checkIcon.style.color = "#e1dee6"; // Match your theme
-                        currentLink.appendChild(checkIcon);
-                    }
-                }
-
-                const processItems = (items, container) => {
-                    console.log(items);
-                    items.forEach((chapter) => {
-                        const li = document.createElement("li");
-                        const a = document.createElement("a");
-                        a.textContent = chapter.label;
-                        a.href = "#";
-
-                        // Add data-href for TOC tracking
-                        a.setAttribute("data-href", chapter.href);
-
-                        li.appendChild(a);
-                        li.onclick = function (e) {
-                            e.preventDefault();
-
-                            // Get the canonical (resolved) href (for logging/debugging)
-                            const canonicalHref = book.canonical(chapter.href);
-
-                            // Strip leading '/' if present (for spine lookup)
-                            const adjustedCanonicalHref =
-                                canonicalHref.startsWith("/")
-                                    ? canonicalHref.slice(1)
-                                    : canonicalHref;
-
-                            // Extract the base adjusted canonical href (before #) for spine lookup
-                            const canonicalBaseHref =
-                                adjustedCanonicalHref.split("#")[0];
-                            const spineItem = book.spine.get(canonicalBaseHref);
-
-                            if (!spineItem) {
-                                return; // Prevent the display call
-                            }
-
-                            // Use the spine item's href for display (the relative path, e.g., "Text/chapter1.xhtml")
-                            const displayHref = spineItem.href;
-
-                            rendition
-                                .display(displayHref)
-                                .then(() => {
-                                    // Update TOC check after navigation
-                                    updateTocCheck(displayHref);
-                                })
-                                .catch((err) => {
-                                    console.error("Navigation error:", err);
-                                });
-                        };
-                        container.appendChild(li);
-
-                        // If there are sub-chapters (nested lists), handle them:
-                        if (chapter.subitems && chapter.subitems.length > 0) {
-                            const ul = document.createElement("ul");
-                            li.appendChild(ul);
-                            processItems(chapter.subitems, ul);
-                        }
-                    });
-                };
-
-                processItems(nav.toc, list);
-
-                // Initial TOC update for the first page
-                rendition.display().then(() => {
-                    const initialHref = rendition.currentLocation().start.href;
-                    updateTocCheck(initialHref);
-                });
-            });
-        </script> -->
-
-        <script>
-            const pathSegments = window.location.pathname.split("/");
-            const bookId = pathSegments[pathSegments.length - 1];
-
-            const prevBtn = document.getElementById("prev-page");
-            const nextBtn = document.getElementById("next-page");
-
-            const loadingCircle = document.querySelector(
-                "#loading-circle .progress",
-            );
-            const loadingText = document.getElementById("loading-text");
-
-            var book = ePub(
-                `https://fupftcwcgdnhzgfvxpzg.supabase.co/storage/v1/object/public/JelLee/The%20Boy%20Who%20Ruled%20the%20Monsters_%20Volume%201.epub`,
-            );
-
-            var rendition = book.renderTo("viewer", {
-                width: "100%",
-                height: "100%",
-                flow: "paginated",
-                manager: "continuous",
-                allowScriptedContent: true,
-            });
-
-            let isFlipping = false;
-
-            rendition.on("rendered", (section, view) => {
-                view.contents.on("wheel", (event) => {
-                    if (isFlipping) return;
-
-                    if (Math.abs(event.deltaY) > 10) {
-                        isFlipping = true;
-
-                        if (event.deltaY > 0) {
-                            rendition.next();
-                        } else {
-                            rendition.prev();
-                        }
-
-                        setTimeout(() => {
-                            isFlipping = false;
-                        }, 500);
-                    }
-                });
-            });
-
-            rendition.hooks.content.register(function (contents) {
-                contents.addStylesheetRules({
-                    body: {
-                        background:
-                            "linear-gradient(135deg, #15171a 0%, #1a1d21 50%, #15171a 100%) !important",
-                        color: "#e1dee6 !important",
-                        "font-family":
-                            "system-ui, -apple-system, sans-serif !important",
-                    },
-                    html: {
-                        background: "transparent !important",
-                    },
-                    "h1, h2, h3, h4": {
-                        color: "#e1dee6 !important",
-                    },
-                    "p, div, li": {
-                        color: "#e1dee6 !important",
-                        "line-height": "1.6 !important",
-                    },
-                });
-            });
-
-            var displayed = rendition.display();
-
-            prevBtn.addEventListener("click", () => {
-                rendition.prev();
-            });
-
-            nextBtn.addEventListener("click", () => {
-                rendition.next();
-            });
-
-            function updateTocCheck() {
-                // Remove 'selected' class from all TOC list items
-                document.querySelectorAll("#toc-list li").forEach((li) => {
-                    li.classList.remove("selected");
-                });
-            }
-
-            rendition.on("relocated", (location) => {
-                prevBtn.style.display = location.atStart ? "none" : "block";
-                nextBtn.style.display = location.atEnd ? "none" : "block";
-
-                // Optional: Update TOC on relocation (but since no matching, it just clears selection)
-                // If you want to re-enable matching here, you'd need to add it back.
-                // For now, it does nothing except clear if you want.
-                // updateTocCheck();  // Uncomment if you want to clear on relocation
-            });
-
-            // 1. Better Progress Animation
-            let progress = 0;
-            const progressInterval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress > 95) progress = 95;
-
-                const offset = 100 - progress;
-                loadingCircle.style.strokeDashoffset = offset;
-            }, 150);
-
-            // 2. The "Finish" Function
-            function hideLoader() {
-                clearInterval(progressInterval);
-                loadingCircle.style.strokeDashoffset = 0;
-                loadingText.textContent = "Rendered!";
-
-                setTimeout(() => {
-                    document.getElementById("loading-circle").style.transition =
-                        "opacity 0.5s";
-                    loadingText.style.transition = "opacity 0.5s";
-                    document.getElementById("loading-circle").style.opacity =
-                        "0";
-                    loadingText.style.opacity = "0";
-
-                    setTimeout(() => {
-                        document.getElementById(
-                            "loading-circle",
-                        ).style.display = "none";
-                        loadingText.style.display = "none";
-                    }, 500);
-                }, 300);
-            }
-
-            // 3. Trigger finish when the FIRST page is actually displayed
-            rendition.display().then(() => {
-                hideLoader();
-            });
-
-            book.loaded.navigation.then(function (nav) {
-                const list = document.getElementById("toc-list");
-                if (!list) return;
-                list.innerHTML = "";
-
-                const processItems = (items, container) => {
-                    console.log(items);
-                    items.forEach((chapter) => {
-                        const li = document.createElement("li");
-                        const a = document.createElement("a");
-                        a.textContent = chapter.label;
-                        a.href = "#";
-
-                        li.appendChild(a);
-
-                        li.onclick = function (e) {
-                            e.preventDefault();
-
-                            updateTocCheck();
-
-                            const canonicalHref = book.canonical(chapter.href);
-
-                            const adjustedCanonicalHref =
-                                canonicalHref.startsWith("/")
-                                    ? canonicalHref.slice(1)
-                                    : canonicalHref;
-
-                            const canonicalBaseHref =
-                                adjustedCanonicalHref.split("#")[0];
-                            const spineItem = book.spine.get(canonicalBaseHref);
-
-                            if (!spineItem) {
-                                return;
-                            }
-
-                            const displayHref = spineItem.href;
-
-                            rendition
-                                .display(displayHref)
-                                .then(() => {
-                                    li.classList.add("selected");
-                                })
-                                .catch((err) => {
-                                    console.error("Navigation error:", err);
-                                });
-                        };
-                        container.appendChild(li);
-
-                        if (chapter.subitems && chapter.subitems.length > 0) {
-                            const ul = document.createElement("ul");
-                            li.appendChild(ul);
-                            processItems(chapter.subitems, ul);
-                        }
-                    });
-                };
-
-                processItems(nav.toc, list);
-
-                // // Initial TOC update for the first page
-                // rendition.display().then(() => {
-                //     const initialIndex =
-                //         rendition.currentLocation().start.index;
-                //     updateTocCheck(initialIndex);
-                // });
-            });
-        </script>
+        <script src="/script/epubParser.js"></script>
     </body>
 </html>

@@ -251,7 +251,7 @@ $(document).ready(function () {
       // const downloadId = `https://drive.google.com/uc?export=download&id=${data.download_id}`;
 
       $("#read-btn").click(function () {
-        const dlId = data.download_id;
+        const dlId = data.id;
         if (dlId) {
           window.location.href = `/reader/${dlId}`;
         }
