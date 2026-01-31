@@ -8,341 +8,11 @@
             src="https://kit.fontawesome.com/48699b744e.js"
             crossorigin="anonymous"
         ></script>
-        <style>
-            :root {
-                --primary-color: #ac03d6;
-                --primary-hover: #9a02c2;
-                --dark-primary-color: #783a87;
-                --secondary-color: #4b00c5;
-                --text-color: #e1dee6;
-                --text-muted: #b3b3b3;
-                --background-color: #15171a;
-                --card-background-color: #212529;
-                --border-color: #3a2b3e;
-                --shadow-color: rgba(0, 0, 0, 0.5);
-                --shadow-light: rgba(172, 3, 214, 0.2);
-                --gradient-bg: linear-gradient(
-                    135deg,
-                    #15171a 0%,
-                    #1a1d21 50%,
-                    #15171a 100%
-                );
-                --transition-fast: 0.2s ease-in-out;
-                --transition-smooth: 0.3s ease-in-out;
-                --border-radius: 12px;
-                --border-radius-large: 20px;
-                --font-size-base: 16px;
-                --font-size-large: 1.2rem;
-                --font-size-xl: 1.5rem;
-                --font-size-2xl: 2rem;
-                --font-size-3xl: 3rem;
-            }
-
-            * {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
-
-            html {
-                scroll-behavior: smooth;
-            }
-
-            body {
-                background: var(--gradient-bg);
-                background-attachment: fixed;
-                font-family: "Inter", sans-serif;
-                color: var(--text-color);
-                line-height: 1.6;
-                font-size: var(--font-size-base);
-                overflow-x: hidden;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-            }
-
-            main {
-                max-width: 100%;
-                height: 100vh;
-                display: flex;
-                overflow: hidden; /* Prevent body scroll issues */
-            }
-
-            .side-navigation {
-                width: 300px;
-                min-width: 300px;
-                min-height: 100vh;
-                background-color: var(--background-color);
-                display: flex;
-                transition: transform var(--transition-smooth);
-            }
-
-            .side-buttons {
-                width: auto;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-                display: flex;
-                padding-top: 20px;
-                flex-direction: column;
-                justify-content: flex-start;
-                align-items: center;
-                overflow-y: auto;
-            }
-
-            .side-button {
-                padding: 10px 15px;
-                border-left: 3px solid transparent; /* Thicker for visibility */
-                transition:
-                    border-left-color var(--transition-fast),
-                    color var(--transition-fast);
-                will-change: transform; /* Optimize hover */
-            }
-
-            .side-button span i {
-                font-size: 1.2rem;
-                color: var(--text-muted);
-                transition: color var(--transition-fast);
-            }
-
-            .side-button.selected {
-                border-left-color: var(--primary-color);
-            }
-
-            .side-button.selected span i {
-                color: var(--text-color);
-            }
-
-            .side-button:hover,
-            .side-button:focus {
-                cursor: pointer;
-                border-left-color: var(--primary-color);
-                outline: none;
-            }
-
-            .side-button:hover span i,
-            .side-button:focus span i {
-                color: var(--text-color);
-            }
-
-            .side-panel {
-                padding: 20px 10px;
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                overflow-y: auto;
-                width: 100%;
-            }
-
-            .side-panel div h2 {
-                font-size: var(--font-size-large);
-                margin-bottom: 10px;
-            }
-
-            .side-panel div ul {
-                max-width: 100%;
-                flex: 1;
-                list-style-type: none;
-                display: flex;
-                flex-direction: column;
-                flex-wrap: nowrap;
-                overflow-y: hidden;
-                gap: 0;
-                margin: 20px 0;
-                padding: 0;
-                min-height: 0; /* Flex fix */
-                scrollbar-width: thin;
-                scrollbar-color: var(--border-color) transparent;
-            }
-
-            .side-panel::-webkit-scrollbar {
-                width: 6px;
-            }
-
-            .side-panel::-webkit-scrollbar-track {
-                background: transparent;
-            }
-
-            .side-panel::-webkit-scrollbar-thumb {
-                background: var(--border-color);
-                border-radius: 3px;
-            }
-
-            .side-panel div ul li {
-                width: 100%;
-                height: auto;
-                padding: 8px 20px;
-                background-color: transparent;
-                color: var(--text-muted);
-                font-size: 0.8rem;
-                display: block;
-                transition: all var(--transition-fast);
-            }
-
-            .side-panel div ul li:hover,
-            .side-panel div ul li:focus {
-                background-color: var(--border-color);
-            }
-
-            .side-panel div ul li.selected {
-                background-color: var(--border-color);
-            }
-
-            .main-panel {
-                width: 100%;
-                background-color: var(--card-background-color);
-                overflow: hidden;
-                position: relative;
-            }
-
-            .chapter-loader {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(
-                    21,
-                    23,
-                    26,
-                    0.8
-                ); /* Semi-transparent background-color */
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 10;
-                transition: opacity 0.2s;
-            }
-
-            .chapter-loader.hidden {
-                display: none;
-                opacity: 0;
-            }
-
-            .mini-spinner {
-                width: 30px;
-                height: 30px;
-                border: 3px solid var(--border-color);
-                border-top: 3px solid var(--primary-color);
-                border-radius: 50%;
-                animation: spin 0.8s linear infinite;
-            }
-
-            #viewer {
-                max-width: 100%;
-                height: 100%;
-            }
-            #viewer .epub-view {
-                background-color: var(--card-background-color);
-            }
-            #viewer ifram {
-                width: 100%;
-                height: 100vh;
-                background-color: var(--card-background-color);
-            }
-            /* Full screen overlay */
-            .loader-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: var(--background-color);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 2000; /* Above the sidebar */
-                transition: opacity var(--transition-smooth);
-            }
-
-            .loader-overlay.hidden {
-                opacity: 0;
-                pointer-events: none;
-            }
-
-            .loader-content {
-                text-align: center;
-            }
-
-            /* Spinner using your primary theme color */
-            .spinner {
-                width: 50px;
-                height: 50px;
-                border: 4px solid var(--border-color);
-                border-top: 4px solid var(--primary-color);
-                border-radius: 50%;
-                animation: spin 1s linear infinite;
-                margin: 0 auto 15px;
-            }
-
-            #loader-text {
-                color: var(--text-color);
-                font-size: var(--font-size-large);
-                letter-spacing: 1px;
-            }
-
-            @keyframes spin {
-                0% {
-                    transform: rotate(0deg);
-                }
-                100% {
-                    transform: rotate(360deg);
-                }
-            }
-            /* Responsive Design */
-            @media (max-width: 768px) {
-                .side-navigation {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 300px;
-                    transform: translateX(-100%); /* Hidden by default */
-                    z-index: 1000;
-                    box-shadow: 2px 0 10px var(--shadow-color);
-                }
-                .side-navigation.side-navigation--open {
-                    transform: translateX(0); /* Show when open */
-                }
-                .main-panel {
-                    width: 100%;
-                }
-                /* Add a toggle button in JS/HTML for mobile, e.g., a hamburger menu */
-            }
-
-            @media (max-width: 480px) {
-                .side-navigation {
-                    width: 250px; /* Narrower on very small screens */
-                }
-                .side-button {
-                    padding: 8px 12px;
-                }
-                .side-panel {
-                    padding: 15px 5px;
-                }
-            }
-        </style>
+        <link rel="stylesheet" href="/styles/reader.css" />
     </head>
 
     <body>
         <main>
-            <div class="side-navigation">
-                <div class="side-buttons">
-                    <div class="side-button selected" data-action="list">
-                        <span><i class="fa-solid fa-list"></i></span>
-                    </div>
-                    <div class="side-button" data-action="bookmark">
-                        <span><i class="fa-solid fa-bookmark"></i></span>
-                    </div>
-                    <div class="side-button" data-action="image">
-                        <span><i class="fa-solid fa-image"></i></span>
-                    </div>
-                    <div class="side-button" data-action="settings">
-                        <span><i class="fa-solid fa-gear"></i></span>
-                    </div>
-                    <div class="side-button" data-action="home">
-                        <span><i class="fa-solid fa-house"></i></span>
-                    </div>
-                </div>
-                <div class="side-panel"></div>
-            </div>
             <div class="main-panel">
                 <div id="book-loader" class="loader-overlay">
                     <div class="loader-content">
@@ -355,12 +25,38 @@
                 </div>
                 <div id="viewer"></div>
             </div>
+            <div class="side-panel">
+                <div>
+                    <h2 id="side-panel-title"></h2>
+                    <ul id="toc-list" class="show"></ul>
+                    <ul id="bookmark-list"></ul>
+                    <ul id="image-list"></ul>
+                    <ul id="settings-list"></ul>
+                </div>
+            </div>
+            <div class="side-buttons">
+                <div class="side-button selected" data-action="list">
+                    <span><i class="fa-solid fa-list"></i></span>
+                </div>
+                <div class="side-button" data-action="bookmark">
+                    <span><i class="fa-solid fa-bookmark"></i></span>
+                </div>
+                <div class="side-button" data-action="image">
+                    <span><i class="fa-solid fa-image"></i></span>
+                </div>
+                <div class="side-button" data-action="settings">
+                    <span><i class="fa-solid fa-gear"></i></span>
+                </div>
+                <div class="side-button" data-action="home">
+                    <span><i class="fa-solid fa-house"></i></span>
+                </div>
+            </div>
         </main>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="/script/script.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
         <script src="/script/epubParser.js"></script>
+        <script src="/script/script.js"></script>
     </body>
 </html>
