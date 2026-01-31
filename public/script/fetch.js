@@ -86,7 +86,7 @@ $(document).ready(function () {
     showSkeletons();
 
     $.ajax({
-      url: "http://192.168.10.108:5173/api/v0/latest",
+      url: "https://shizu-seven.vercel.app/api/v0/latest",
       type: "GET",
       data: { page: page, limit: limit },
       dataType: "json",
@@ -136,7 +136,7 @@ $(document).ready(function () {
     showSkeletons();
 
     $.ajax({
-      url: "http://192.168.10.108:5173/api/v0/releases",
+      url: "https://shizu-seven.vercel.app/api/v0/releases",
       type: "GET",
       data: {
         page: page,
@@ -174,7 +174,7 @@ $(document).ready(function () {
     showSkeletons();
 
     $.ajax({
-      url: "http://192.168.10.108:5173/api/v0/series",
+      url: "https://shizu-seven.vercel.app/api/v0/series",
       type: "GET",
       data: {
         page: page,

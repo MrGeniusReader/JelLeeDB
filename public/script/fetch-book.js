@@ -75,7 +75,7 @@ $(document).ready(function () {
   }
 
   $.ajax({
-    url: `http://192.168.10.108:5173/api/v0/book/${bookId}`,
+    url: `https://shizu-seven.vercel.app/api/v0/book/${bookId}`,
     method: "GET",
     dataType: "json",
     success: function (response) {
