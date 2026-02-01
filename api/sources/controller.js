@@ -15,7 +15,7 @@ export const fetchData = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
 
-    const dataPath = path.join(__dirname, "../data/data.json");
+    const dataPath = path.join(__dirname, "../public/data/data.json");
     const fileContent = await fs.readFile(dataPath, "utf-8");
     const localData = JSON.parse(fileContent);
     const allItems = localData.data;
@@ -74,7 +74,7 @@ export const fetchBookDetails = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const dataPath = path.join(__dirname, "../data/data.json");
+    const dataPath = path.join(__dirname, "../public/data/data.json");
     const fileContent = await fs.readFile(dataPath, "utf8");
     const data = JSON.parse(fileContent);
 
@@ -235,7 +235,7 @@ export const fetchReleaseBookDetails = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const dataPath = path.join(__dirname, "../data/data.json");
+    const dataPath = path.join(__dirname, "../public/data/data.json");
     const fileContent = await fs.readFile(dataPath, "utf-8");
     const localData = JSON.parse(fileContent);
 
