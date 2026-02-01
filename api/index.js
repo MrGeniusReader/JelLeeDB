@@ -17,19 +17,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.get("/book/:id", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "book.html"));
+  res.sendFile(path.join(__dirname, "..", "public", "pages", "book.html"));
 });
 
 app.get("/series/:id", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "series.html"));
+  res.sendFile(path.join(__dirname, "..", "public", "pages", "series.html"));
 });
 
 app.get("/release/:id", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "release.html"));
+  res.sendFile(path.join(__dirname, "..", "public", "pages", "release.html"));
 });
 
 app.get("/reader/:id", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "reader.html"));
+  res.sendFile(path.join(__dirname, "..", "public", "pages", "reader.html"));
 });
 
 app.use(express.static(path.join(__dirname, "public")));
