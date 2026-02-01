@@ -76,7 +76,7 @@ $(document).ready(function () {
 
   function fetchReleaseById(id) {
     $.ajax({
-      url: `https://shizu-seven.vercel.app/api/v0/release/${id}`,
+      url: `https://jelleedb.vercel.app/api/v0/release/${id}`,
       method: "GET",
       dataType: "json",
       success: function (response) {
@@ -91,7 +91,7 @@ $(document).ready(function () {
 
   function fetchReleaseBook(id) {
     $.ajax({
-      url: `https://shizu-seven.vercel.app/api/v0/book/${id}`,
+      url: `https://jelleedb.vercel.app/api/v0/book/${id}`,
       method: "GET",
       dataType: "json",
       success: function (response) {

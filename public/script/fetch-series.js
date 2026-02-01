@@ -110,7 +110,7 @@ $(document).ready(function () {
   }
 
   $.ajax({
-    url: `https://shizu-seven.vercel.app/api/v0/series/${bookId}`,
+    url: `https://jelleedb.vercel.app/api/v0/series/${bookId}`,
     method: "GET",
     dataType: "json",
     success: function (data) {

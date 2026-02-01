@@ -86,7 +86,7 @@ $(document).ready(function () {
     showSkeletons();
 
     $.ajax({
-      url: "https://shizu-seven.vercel.app/api/v0/latest",
+      url: "https://jelleedb.vercel.app/api/v0/latest",
       type: "GET",
       data: { page: page, limit: limit },
       dataType: "json",
@@ -136,7 +136,7 @@ $(document).ready(function () {
     showSkeletons();
 
     $.ajax({
-      url: "https://shizu-seven.vercel.app/api/v0/releases",
+      url: "https://jelleedb.vercel.app/api/v0/releases",
       type: "GET",
       data: {
         page: page,
@@ -174,7 +174,7 @@ $(document).ready(function () {
     showSkeletons();
 
     $.ajax({
-      url: "https://shizu-seven.vercel.app/api/v0/series",
+      url: "https://jelleedb.vercel.app/api/v0/series",
       type: "GET",
       data: {
         page: page,
