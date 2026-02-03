@@ -2,8 +2,8 @@
   "id": "com.jelleedb.app",
   "name": "JelLeeDB - Light Novel Library",
   "short_name": "JelLeeDB",
-  "description": "Discover and download a vast collection of light and web novels in convenient ebook formats. From epic fantasies to heartwarming romances, JelLeeDB brings you high-quality reads tailored for every reader.",
-  "start_url": "/",
+  "description": "Discover and download a vast collection of light and web novels in convenient ebook formats.",
+  "start_url": "/?source=pwa",
   "display": "standalone",
   "background_color": "#15171a",
   "theme_color": "#ac03d6",
@@ -20,7 +20,7 @@
       "src": "/images/jelleedb-icon.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "maskable"
+      "purpose": "any"
     }
   ]
 }
